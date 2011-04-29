@@ -6,6 +6,8 @@ look at all the internal counters that Varnish has.
 It can monitor any of these counters, and you can add warning & critical values for
 each counter individually.
 
+It will return Nagios perfdata for each counter requested.
+
 Additionally, there is one 'special' counter that doesn't exist in the varnishstat -1 output -
 this is 'cache_hit_percent', which is calculated like this:
      
