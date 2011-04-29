@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # check_varnish.pl v1.0, 29/4/2011
-# Written by Andy Sykes <a.sykes@ucl.ac.uk>
+# Written by Andy Sykes <andy@tinycat.co.uk>
 #
 # This plugin monitors the counters returned by varnishstat.
 # It also returns perfdata for each of the counters it monitors.
