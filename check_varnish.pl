@@ -167,10 +167,14 @@ sub parse_varnishstat {
     # Add our special calculated counter 'cache_hit_percent'
     my $hit             = $stats{'cache_hit'};
     my $miss            = $stats{'cache_miss'};
-    my $percent         = ( $hit / ( $hit + $miss ) ) * 100;
-    my $rounded_percent = sprintf( "%.2f", $percent );
-    $stats{'cache_hit_percent'} = $rounded_percent;
-
+    if ( ($hit + $miss) == 0 ) {
+    	$stats{'cache_hit_percent'} = '-';
+    }
+    else {
+		my $percent         = ( $hit / ( $hit + $miss ) ) * 100;
+		my $rounded_percent = sprintf( "%.2f", $percent );
+		$stats{'cache_hit_percent'} = $rounded_percent;
+    }
 }
 
 sub return_error {
