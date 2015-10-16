@@ -281,7 +281,7 @@ sub print_list {
         printf( "%-20s",   "cache_hit_percent" );
         printf( "%-20s\n", "Percent of requests served from cache" );
 
-        foreach my $key ( keys %stats ) {
+        foreach my $key (sort ( keys %stats )) {
             next if $key eq "cache_hit_percent";
             my $info = $stats_help{$key};
             printf( "%-20s",   $key );
