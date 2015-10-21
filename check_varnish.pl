@@ -165,15 +165,15 @@ sub parse_varnishstat {
     }
 
     # Add our special calculated counter 'cache_hit_percent'
-    my $hit             = $stats{'cache_hit'};
-    my $miss            = $stats{'cache_miss'};
+    my $hit             = $stats{'MAIN.cache_hit'};
+    my $miss            = $stats{'MAIN.cache_miss'};
     if ( ($hit + $miss) == 0 ) {
-    	$stats{'cache_hit_percent'} = '-';
+    	$stats{'AUX.cache_hit_percent'} = '-';
     }
     else {
 		my $percent         = ( $hit / ( $hit + $miss ) ) * 100;
 		my $rounded_percent = sprintf( "%.2f", $percent );
-		$stats{'cache_hit_percent'} = $rounded_percent;
+		$stats{'AUX.cache_hit_percent'} = $rounded_percent;
     }
 }
 
@@ -210,9 +210,9 @@ It can monitor any of these counters, and you can add warning & critical values 
 each counter individually.
 
 Additionally, there is one 'special' counter that doesn't exist in the varnishstat -1 output -
-this is 'cache_hit_percent', which is calculated like this:
-     
-     cache_hit_percent = ( cache_hit / ( cache_hit + cache_miss ) ) * 100
+this is 'AUX.cache_hit_percent', which is calculated like this:
+
+     AUX.cache_hit_percent = ( MAIN.cache_hit / ( MAIN.cache_hit + MAIN.cache_miss ) ) * 100
 
 Usage:
 
@@ -224,33 +224,33 @@ Options:
 
     --spec=[spec definition], -s [spec definition]
         Specifies which Varnish counter to monitor. A spec definition looks like this:
-        
+
             --spec=counter_name,warnvalue,critvalue,[u|d]
-        
+
         The "u" or "d" option at the end determines whether you want to consider the warn and crit values as met
         when the counter is above ('u' - up) or below ('d' - down) these values.
-        e.g. for failed backend requests, you'd want to use the 'u' option (since more failed backend 
-        requests is bad thing), but for the cache_hit_percent you'd want to use 'd', since you'll only
-        warn when the cache isn't serving as many requests from memory as you'd expect. 
-        
+        e.g. for failed backend requests, you'd want to use the 'u' option (since more failed backend
+        requests is bad thing), but for the AUX.cache_hit_percent you'd want to use 'd', since you'll only
+        warn when the cache isn't serving as many requests from memory as you'd expect.
+
         If no 'u' or 'd' option is present, 'u' is assumed.
-        
+
         If you don't want to set warn/crit values (i.e. just want perfdata output), then use this form:
-        
+
             --spec=counter_name
-        
+
         To monitor multiple counters, use multiple --spec options. e.g.
-        
+
             --spec=counter_one --spec=counter_two,50,80 --spec=counter_three
-        
+
         The plugin will return a WARNING state if any one counter is over its warn value, and no counters
         are over the critical value. Similarly, if any one counter is over its crit value, the plugin
         will return a CRITICAL state.
-    
+
     --list
         This option prints a list of all the available Varnish counters available, and a brief
         description of what each one is for (taken from the varnishstat output).
-    
+
     --help
         Displays this message.
 
@@ -281,7 +281,7 @@ sub print_list {
         printf( "%-20s",   "cache_hit_percent" );
         printf( "%-20s\n", "Percent of requests served from cache" );
 
-        foreach my $key ( keys %stats ) {
+        foreach my $key (sort ( keys %stats )) {
             next if $key eq "cache_hit_percent";
             my $info = $stats_help{$key};
             printf( "%-20s",   $key );
